@@ -21,6 +21,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           {/* -------------Dealer Page Routing--------------- */}
           <Route
