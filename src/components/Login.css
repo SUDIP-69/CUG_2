@@ -1,0 +1,123 @@
+.login {
+  background-color: #1d2b53;
+  width: 100%;
+  height: 100%;
+}
+.login .login_header {
+  width: 100%;
+  height: auto;
+  padding: 2rem;
+  padding-bottom: 1rem;
+  display: flex;
+}
+.login_header .logo {
+  width: 8rem;
+  height: auto;
+}
+center {
+  width: 100%;
+}
+center h1 {
+  color: white;
+  font-size: 4rem;
+}
+.form {
+  width: 100%;
+  height: auto;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.login_form {
+  width: auto;
+  padding: 1rem;
+}
+.select_user {
+  width: 26rem;
+  height: 4rem;
+  border: 1px solid white;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.select_user button {
+  border: none;
+  width: 12rem;
+  font-size: 1.3rem;
+  height: auto;
+  padding: 0.5rem;
+  border-radius: 2rem;
+  font-weight: bold;
+  /* border: 1px solid black; */
+  background-color: white;
+  color: #d03a49;
+}
+.dealer,
+.admin {
+  background-color: #d03a49 !important;
+  color: white !important;
+}
+.user_name,
+.user_email,
+.user_password {
+  width: 26rem;
+  height: 4rem;
+  border: 1px solid white;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+.loginname,
+.loginemail {
+  border: none;
+  width: 18rem;
+  background: transparent;
+  height: auto;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.1rem;
+  outline: none;
+}
+.loginpass {
+  border: none;
+  outline: none;
+  width: 16rem;
+  background: transparent;
+  height: auto;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.1rem;
+}
+.userlogo {
+  width: 1.5rem;
+  height: auto;
+}
+.userpass {
+  width: 15rem;
+  height: auto;
+}
+.submit {
+  width: 100%;
+  padding: 1rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #d03a49;
+  border: none;
+  border-radius: 2rem;
+  margin-top: 2rem;
+}
+.submit:hover {
+  background-color: #c92031;
+  transition: 0.5s ease;
+}

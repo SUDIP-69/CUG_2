@@ -1,0 +1,50 @@
+.dashboard {
+  height: 100vh;
+  min-width: 26rem;
+  background-color: #1d2b53;
+  padding: 2rem;
+  gap: 1rem;
+  margin-right: 2rem;
+}
+.dashboard ul {
+  list-style: none;
+  text-align: center;
+  margin-top: 5rem;
+  padding-left: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* text-align: start; */
+}
+.dashboard li {
+  padding: 1rem 0rem;
+}
+.dashboard h2 {
+  color: white;
+  padding: 1rem 0.5rem;
+  font-size: 3rem;
+  border-bottom: 2px solid white;
+  margin-bottom: 3rem;
+}
+.dashboard a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.4rem;
+}
+.logoutbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  outline: none;
+  /* border: 1px solid white; */
+  border: none;
+  background: transparent;
+  position: fixed;
+  bottom: 4rem;
+  left: 3rem;
+  color: #d03a49;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
