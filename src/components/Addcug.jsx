@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { db } from "../api/firebaseConfig"; 
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
 import "./Addcug.css";
 
 const Addcug = () => {
@@ -20,19 +20,49 @@ const Addcug = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await setDoc(doc(db, "cug", cugNo), {
-        cugNo: cugNo,
-        employeeNo: employeeNo,
-        employeeName: employeeName,
-        designation: designation,
-        division: division,
-        department: department,
-        status: status,
-        billUnit: billUnit,
-        allocation: allocation,
-        plan: plan,
-      });
-      setSuccess("CUG added successfully!");
+      const docRef = doc(db, "cug", cugNo);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const existingCug = docSnap.data();
+        if (existingCug.status === "Active") {
+          setError("A CUG with this number already exists and is active.");
+          setSuccess("");
+          return;
+        } else {
+          // If the existing CUG is inactive, add a new document with a unique ID
+          const newCugRef = collection(db, "cug");
+          await addDoc(newCugRef, {
+            cugNo: cugNo,
+            employeeNo: employeeNo,
+            employeeName: employeeName,
+            designation: designation,
+            division: division,
+            department: department,
+            status: status,
+            billUnit: billUnit,
+            allocation: allocation,
+            plan: plan,
+          });
+          setSuccess("CUG added successfully!");
+        }
+      } else {
+        // If the CUG does not exist, add it directly with the given CUG number as the document ID
+        await setDoc(doc(db, "cug", cugNo), {
+          cugNo: cugNo,
+          employeeNo: employeeNo,
+          employeeName: employeeName,
+          designation: designation,
+          division: division,
+          department: department,
+          status: status,
+          billUnit: billUnit,
+          allocation: allocation,
+          plan: plan,
+        });
+        setSuccess("CUG added successfully!");
+      }
+
       setCugNo("");
       setEmployeeNo("");
       setEmployeeName("");

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { db } from "../api/firebaseConfig"; // Ensure you have firebaseConfig.js correctly set up
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../api/firebaseConfig";
+import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 import "./activate_deactivateCUG.css";
 import { Outlet } from "react-router-dom";
 
@@ -13,15 +13,17 @@ const AcDeac = () => {
     e.preventDefault();
     setError("");
     setCugDetails(null);
-    
-    try {
-      const docRef = doc(db, "cug", cugNo);
-      const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setCugDetails(docSnap.data());
+    try {
+      const cugCollection = collection(db, "cug");
+      const q = query(cugCollection, where("cugNo", "==", cugNo), where("status", "==", "Active"));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const docData = querySnapshot.docs[0].data(); // Assuming there's only one document per CUG No with Active status
+        setCugDetails(docData);
       } else {
-        setError("No CUG found with the provided number.");
+        setError("No active CUG found with the provided number.");
       }
     } catch (err) {
       console.error("Error fetching document: ", err);
