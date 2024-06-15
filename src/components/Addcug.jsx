@@ -1,25 +1,91 @@
+import { useState } from "react";
+import { db } from "../api/firebaseConfig"; 
+import { doc, setDoc } from "firebase/firestore";
 import "./Addcug.css";
 
 const Addcug = () => {
+  const [cugNo, setCugNo] = useState("");
+  const [employeeNo, setEmployeeNo] = useState("");
+  const [employeeName, setEmployeeName] = useState("");
+  const [designation, setDesignation] = useState("");
+  const [division, setDivision] = useState("");
+  const [department, setDepartment] = useState("");
+  const [status, setStatus] = useState("");
+  const [billUnit, setBillUnit] = useState("");
+  const [allocation, setAllocation] = useState("");
+  const [plan, setPlan] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await setDoc(doc(db, "cug", cugNo), {
+        cugNo: cugNo,
+        employeeNo: employeeNo,
+        employeeName: employeeName,
+        designation: designation,
+        division: division,
+        department: department,
+        status: status,
+        billUnit: billUnit,
+        allocation: allocation,
+        plan: plan,
+      });
+      setSuccess("CUG added successfully!");
+      setCugNo("");
+      setEmployeeNo("");
+      setEmployeeName("");
+      setDesignation("");
+      setDivision("");
+      setDepartment("");
+      setStatus("");
+      setBillUnit("");
+      setAllocation("");
+      setPlan("");
+      setError("");
+    } catch (err) {
+      console.error("Error adding document: ", err);
+      setError("Error adding CUG. Please try again.");
+      setSuccess("");
+    }
+  };
+
   return (
     <>
       <main className="addcug">
         <h1>Add New CUG</h1>
         <br />
-        <form className="row g-3">
+        {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
+        <form className="row g-3" onSubmit={handleSubmit}>
           {/* ----------CUG NO.------------------ */}
           <div className="col-md-4">
             <label htmlFor="inputCUGno" className="form-label">
               CUG No.
             </label>
-            <input type="number" className="form-control" id="inputCUGno" />
+            <input
+              type="number"
+              className="form-control"
+              id="inputCUGno"
+              value={cugNo}
+              onChange={(e) => setCugNo(e.target.value)}
+              required
+            />
           </div>
           {/* ----------Employee No.--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputempNo" className="form-label">
               Employee No.
             </label>
-            <input type="number" className="form-control" id="inputempNo" />
+            <input
+              type="number"
+              className="form-control"
+              id="inputempNo"
+              value={employeeNo}
+              onChange={(e) => setEmployeeNo(e.target.value)}
+              required
+            />
           </div>
           {/* ----------Employee Name.--------------- */}
           <div className="col-12">
@@ -31,6 +97,9 @@ const Addcug = () => {
               className="form-control"
               id="inputName"
               placeholder="John Wick"
+              value={employeeName}
+              onChange={(e) => setEmployeeName(e.target.value)}
+              required
             />
           </div>
           {/* ----------Employee Designation.--------------- */}
@@ -43,6 +112,9 @@ const Addcug = () => {
               className="form-control"
               id="inputDesignation"
               placeholder="Employee"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              required
             />
           </div>
           {/* ----------Employee Division--------------- */}
@@ -50,9 +122,18 @@ const Addcug = () => {
             <label htmlFor="inputDivision" className="form-label">
               Division
             </label>
-            <select id="inputDivision" className="form-select">
-              <option selected>Choose...</option>
-              <option>...</option>
+            <select
+              id="inputDivision"
+              className="form-select"
+              value={division}
+              onChange={(e) => setDivision(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              <option value="Division1">South-East</option>
+              <option value="Division2">East Coast</option>
             </select>
           </div>
           {/* ----------Employee Department--------------- */}
@@ -60,9 +141,18 @@ const Addcug = () => {
             <label htmlFor="inputDepartment" className="form-label">
               Department
             </label>
-            <select id="inputDepartment" className="form-select">
-              <option selected>Choose...</option>
-              <option>...</option>
+            <select
+              id="inputDepartment"
+              className="form-select"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              <option value="Department1">Signaling</option>
+              <option value="Department2">ALP</option>
             </select>
           </div>
           {/* ----------Employee Status--------------- */}
@@ -70,9 +160,18 @@ const Addcug = () => {
             <label htmlFor="inputstatus" className="form-label">
               Employee Status
             </label>
-            <select id="inputstatus" className="form-select">
-              <option selected>Choose...</option>
-              <option>...</option>
+            <select
+              id="inputstatus"
+              className="form-select"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
             </select>
           </div>
           {/* ----------Employee Bill Unit--------------- */}
@@ -80,16 +179,32 @@ const Addcug = () => {
             <label htmlFor="inputbillUnit" className="form-label">
               Bill Unit
             </label>
-            <input type="number" className="form-control" id="inputbillUnit" />
+            <input
+              type="number"
+              className="form-control"
+              id="inputbillUnit"
+              value={billUnit}
+              onChange={(e) => setBillUnit(e.target.value)}
+              required
+            />
           </div>
           {/* ----------Employee Allocation--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputAllocation" className="form-label">
               Allocation
             </label>
-            <select id="inputAllocation" className="form-select">
-              <option selected>Choose...</option>
-              <option>...</option>
+            <select
+              id="inputAllocation"
+              className="form-select"
+              value={allocation}
+              onChange={(e) => setAllocation(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              <option value="Allocation1">1234567</option>
+              <option value="Allocation2">2345678</option>
             </select>
           </div>
           {/* ----------Employee Plan--------------- */}
@@ -97,19 +212,21 @@ const Addcug = () => {
             <label htmlFor="inputPlan" className="form-label">
               Plan
             </label>
-            <select id="inputPlan" className="form-select">
-              <option selected>Choose...</option>
-              <option>...</option>
+            <select
+              id="inputPlan"
+              className="form-select"
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              <option value="Plan1">Plan A</option>
+              <option value="Plan2">Plan B</option>
+              <option value="Plan3">Plan C</option>
             </select>
           </div>
-          {/* <div className="col-12">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="gridCheck" />
-              <label className="form-check-label" htmlFor="gridCheck">
-                Check me out
-              </label>
-            </div>
-          </div> */}
           <div className="col-12">
             <button type="submit" className="btn btn-danger">
               Submit
@@ -120,4 +237,5 @@ const Addcug = () => {
     </>
   );
 };
+
 export default Addcug;
