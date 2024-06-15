@@ -68,6 +68,7 @@ const Addcug = () => {
               type="number"
               className="form-control"
               id="inputCUGno"
+              placeholder="00000000"
               value={cugNo}
               onChange={(e) => setCugNo(e.target.value)}
               required
@@ -96,7 +97,7 @@ const Addcug = () => {
               type="text"
               className="form-control"
               id="inputName"
-              placeholder="John Wick"
+              placeholder="Full Name"
               value={employeeName}
               onChange={(e) => setEmployeeName(e.target.value)}
               required
@@ -111,7 +112,7 @@ const Addcug = () => {
               type="text"
               className="form-control"
               id="inputDesignation"
-              placeholder="Employee"
+              placeholder="Dr./Mr./Mrs."
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
               required
@@ -132,8 +133,8 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Division1">South-East</option>
-              <option value="Division2">East Coast</option>
+              <option value="South-East">South-East</option>
+              <option value="East Coast">East Coast</option>
             </select>
           </div>
           {/* ----------Employee Department--------------- */}
@@ -151,8 +152,8 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Department1">Signaling</option>
-              <option value="Department2">ALP</option>
+              <option value="Signaling">Signaling</option>
+              <option value="ALP">ALP</option>
             </select>
           </div>
           {/* ----------Employee Status--------------- */}
@@ -203,8 +204,8 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Allocation1">1234567</option>
-              <option value="Allocation2">2345678</option>
+              <option value="1234567">1234567</option>
+              <option value="2345678">2345678</option>
             </select>
           </div>
           {/* ----------Employee Plan--------------- */}
@@ -222,9 +223,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Plan1">Plan A</option>
-              <option value="Plan2">Plan B</option>
-              <option value="Plan3">Plan C</option>
+              <option value="Plan A">Plan A</option>
+              <option value="Plan B">Plan B</option>
+              <option value="Plan C">Plan C</option>
             </select>
           </div>
           <div className="col-12">

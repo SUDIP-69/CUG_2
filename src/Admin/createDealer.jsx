@@ -60,7 +60,7 @@ const CreateDealer = () => {
               type="text"
               className="form-control"
               id="inputUsername"
-              placeholder="John Wick"
+              placeholder="Full Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -74,6 +74,7 @@ const CreateDealer = () => {
               type="email"
               className="form-control"
               id="inputEmail4"
+              placeholder="__@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -133,9 +134,9 @@ const CreateDealer = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="State1">Andhra Pradesh</option>
-              <option value="State2">Odisha</option>
-              <option value="State3">West Bengal</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Odisha">Odisha</option>
+              <option value="West Bengal">West Bengal</option>
             </select>
           </div>
           <div className="col-md-2">
