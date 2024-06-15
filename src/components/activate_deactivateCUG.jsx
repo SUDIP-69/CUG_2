@@ -42,7 +42,7 @@ const AcDeac = () => {
           allocation: "",
           plan: "",
         });
-        setCugDetails((prev) => ({ ...prev, employeeNo: "", employeeName: "", designation: "", division: "", department: "", status: "", billUnit: "", allocation: "", plan: "" }));
+        setCugDetails((prev) => ({ ...prev, employeeNo: "", employeeName: "", designation: "", division: "", department: "", status: "Inactive", billUnit: "", allocation: "", plan: "" }));
         setError("");
       } catch (err) {
         console.error("Error updating document: ", err);
