@@ -5,11 +5,68 @@
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    /* padding: 20px; */
+    position: relative;
   }
+
   .allotmentHistory h1 {
     font-size: 3rem;
   }
-  .historyTable {
-    margin-top: 1rem;
+  
+  .searchCUG {
+    margin-bottom: 20px;
+  }
+  
+  .searchCont {
+    margin-bottom: 10px;
+  }
+  
+  .table-container {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+    z-index: 2; /* Ensure the header is above the body rows */
+  }
+  
+  .table tr.active {
+    background-color: #dff0d8;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .download-btn-container {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+  
+  .btn-success {
+    margin-top: 200px;
+    margin-right: 10px;
+    background-color: #28a755;
+    border-color: #a3f3a9be;
+    border-width: 2px;
+    color: #fff;
   }
   

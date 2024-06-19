@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { db } from "../api/firebaseConfig"; 
-import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { db } from "../api/firebaseConfig";
+import { doc, getDoc, setDoc, collection, addDoc, Timestamp } from "firebase/firestore";
 import "./Addcug.css";
 
 const Addcug = () => {
   const [cugNo, setCugNo] = useState("");
   const [employeeNo, setEmployeeNo] = useState("");
   const [employeeName, setEmployeeName] = useState("");
+  // const [operator, setOperator] = useState("");
   const [designation, setDesignation] = useState("");
   const [division, setDivision] = useState("");
   const [department, setDepartment] = useState("");
@@ -16,53 +17,90 @@ const Addcug = () => {
   const [plan, setPlan] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [cugAvailable, setCugAvailable] = useState(null);
+
+  useEffect(() => {
+    const checkCugAvailability = async () => {
+      if (cugNo.length === 10) {
+        try {
+          const docRef = doc(db, "cug", cugNo);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const existingCug = docSnap.data();
+            if (existingCug.status === "Active") {
+              setCugAvailable(false);
+            } else {
+              setCugAvailable(true);
+            }
+          } else {
+            setCugAvailable(true);
+          }
+        } catch (err) {
+          console.error("Error checking CUG availability: ", err);
+        }
+      } else {
+        setCugAvailable(null);
+      }
+    };
+
+    checkCugAvailability();
+  }, [cugNo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (cugNo.length !== 10 || employeeNo.length !== 11) {
+      setError("CUG No. must be 10 digits and Employee No. must be 11 characters.");
+      return;
+    }
+
+    if (cugAvailable === false) {
+      setError("A CUG with this number already exists and is active.");
+      return;
+    }
+
     try {
+      const now = new Date().toLocaleString();
+      const s = "Active";
       const docRef = doc(db, "cug", cugNo);
       const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const existingCug = docSnap.data();
-        if (existingCug.status === "Active") {
-          setError("A CUG with this number already exists and is active.");
-          setSuccess("");
-          return;
-        } else {
-          // If the existing CUG is inactive, add a new document with a unique ID
-          const newCugRef = collection(db, "cug");
-          await addDoc(newCugRef, {
-            cugNo: cugNo,
-            employeeNo: employeeNo,
-            employeeName: employeeName,
-            designation: designation,
-            division: division,
-            department: department,
-            status: status,
-            billUnit: billUnit,
-            allocation: allocation,
-            plan: plan,
-          });
-          setSuccess("CUG added successfully!");
-        }
+      if (docSnap.exists() && docSnap.data().status === "Inactive") {
+        // If the existing CUG is inactive, add a new document with a unique ID
+        const newCugRef = collection(db, "cug");
+        await addDoc(newCugRef, {
+          cugNo: cugNo,
+          employeeNo: employeeNo,
+          employeeName: employeeName,
+          operator: status,
+          designation: designation,
+          division: division,
+          department: department,
+          status: s,
+          billUnit: billUnit,
+          allocation: allocation,
+          plan: plan,
+          createdAt: now,
+        });
       } else {
         // If the CUG does not exist, add it directly with the given CUG number as the document ID
         await setDoc(doc(db, "cug", cugNo), {
           cugNo: cugNo,
           employeeNo: employeeNo,
           employeeName: employeeName,
+          operator: status,
           designation: designation,
           division: division,
           department: department,
-          status: status,
+          status: s,
           billUnit: billUnit,
           allocation: allocation,
           plan: plan,
+          createdAt: now,
         });
-        setSuccess("CUG added successfully!");
       }
 
+      setSuccess("CUG added successfully!");
       setCugNo("");
       setEmployeeNo("");
       setEmployeeName("");
@@ -74,6 +112,7 @@ const Addcug = () => {
       setAllocation("");
       setPlan("");
       setError("");
+      setCugAvailable(null);
     } catch (err) {
       console.error("Error adding document: ", err);
       setError("Error adding CUG. Please try again.");
@@ -94,15 +133,24 @@ const Addcug = () => {
             <label htmlFor="inputCUGno" className="form-label">
               CUG No.
             </label>
-            <input
-              type="number"
-              className="form-control"
-              id="inputCUGno"
-              placeholder="00000000"
-              value={cugNo}
-              onChange={(e) => setCugNo(e.target.value)}
-              required
-            />
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                id="inputCUGno"
+                placeholder="0000000000"
+                value={cugNo}
+                onChange={(e) => setCugNo(e.target.value)}
+                maxLength="10"
+                required
+              />
+              {cugAvailable === true && (
+                <span className="input-group-text text-success">✔</span>
+              )}
+              {cugAvailable === false && (
+                <span className="input-group-text text-danger">✖</span>
+              )}
+            </div>
           </div>
           {/* ----------Employee No.--------------- */}
           <div className="col-md-4">
@@ -110,11 +158,13 @@ const Addcug = () => {
               Employee No.
             </label>
             <input
-              type="number"
+              type="text"
               className="form-control"
               id="inputempNo"
               value={employeeNo}
               onChange={(e) => setEmployeeNo(e.target.value)}
+              maxLength="11"
+              pattern="[a-zA-Z0-9]{11}"
               required
             />
           </div>
@@ -186,10 +236,10 @@ const Addcug = () => {
               <option value="ALP">ALP</option>
             </select>
           </div>
-          {/* ----------Employee Status--------------- */}
+          {/* ----------Operator--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputstatus" className="form-label">
-              Employee Status
+              Operator
             </label>
             <select
               id="inputstatus"
@@ -201,8 +251,10 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option value="Airtel">Airtel</option>
+              <option value="Vi">Vi</option>
+              <option value="BSNL">BSNL</option>
+              <option value="Jio">Jio</option>
             </select>
           </div>
           {/* ----------Employee Bill Unit--------------- */}
