@@ -138,7 +138,7 @@ const Addcug = () => {
                 type="text"
                 className="form-control"
                 id="inputCUGno"
-                placeholder="0000000000"
+                placeholder="10 digit number"
                 value={cugNo}
                 onChange={(e) => setCugNo(e.target.value)}
                 maxLength="10"
@@ -161,6 +161,7 @@ const Addcug = () => {
               type="text"
               className="form-control"
               id="inputempNo"
+              placeholder="11 alpha-numeric character"
               value={employeeNo}
               onChange={(e) => setEmployeeNo(e.target.value)}
               maxLength="11"
