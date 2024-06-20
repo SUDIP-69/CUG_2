@@ -56,3 +56,22 @@
   border-color: #28a745;
   color: #fff;
 }
+
+/* Add these styles to your allotmentHistory.css file */
+
+.arrow {
+  color: gray;
+  margin-left: 5px;
+  font-size: 0.8em;
+}
+
+.arrow.active {
+  color: rgb(7, 225, 7);
+  background-color: rgba(255, 0, 0, 0);
+}
+
+.table th {
+  cursor: pointer;
+  user-select: none;
+}
+
