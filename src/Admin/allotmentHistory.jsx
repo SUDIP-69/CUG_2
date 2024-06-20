@@ -151,7 +151,11 @@ const AllHis = () => {
                     <td>{details.plan}</td>
                     <td>{details.createdAt}</td>
                     <td>{details.deactivatedAt || '-'}</td>
+
+
+                    
                   </tr>
+                  
                 ))}
               </tbody>
             </table>
