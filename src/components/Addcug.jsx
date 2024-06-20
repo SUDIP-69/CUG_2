@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { db } from "../api/firebaseConfig";
-import { doc, getDoc, setDoc, collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import "./Addcug.css";
 
 const Addcug = () => {
   const [cugNo, setCugNo] = useState("");
   const [employeeNo, setEmployeeNo] = useState("");
   const [employeeName, setEmployeeName] = useState("");
-  // const [operator, setOperator] = useState("");
   const [designation, setDesignation] = useState("");
   const [division, setDivision] = useState("");
   const [department, setDepartment] = useState("");
-  const [status, setStatus] = useState("");
+  const [operator, setOperator] = useState("");
   const [billUnit, setBillUnit] = useState("");
   const [allocation, setAllocation] = useState("");
   const [plan, setPlan] = useState("");
@@ -23,11 +22,12 @@ const Addcug = () => {
     const checkCugAvailability = async () => {
       if (cugNo.length === 10) {
         try {
-          const docRef = doc(db, "cug", cugNo);
-          const docSnap = await getDoc(docRef);
+          const q = query(collection(db, "cug"), where("cugNo", "==", cugNo), where("status", "==", "Active"));
+          const querySnapshot = await getDocs(q);
 
-          if (docSnap.exists()) {
-            const existingCug = docSnap.data();
+          if (!querySnapshot.empty) {
+            const existingCug = querySnapshot.docs[0].data();
+            // console.log(existingCug);
             if (existingCug.status === "Active") {
               setCugAvailable(false);
             } else {
@@ -61,44 +61,23 @@ const Addcug = () => {
 
     try {
       const now = new Date().toLocaleString();
-      const s = "Active";
-      const docRef = doc(db, "cug", cugNo);
-      const docSnap = await getDoc(docRef);
+      const status = "Active";
 
-      if (docSnap.exists() && docSnap.data().status === "Inactive") {
-        // If the existing CUG is inactive, add a new document with a unique ID
-        const newCugRef = collection(db, "cug");
-        await addDoc(newCugRef, {
-          cugNo: cugNo,
-          employeeNo: employeeNo,
-          employeeName: employeeName,
-          operator: status,
-          designation: designation,
-          division: division,
-          department: department,
-          status: s,
-          billUnit: billUnit,
-          allocation: allocation,
-          plan: plan,
-          createdAt: now,
-        });
-      } else {
-        // If the CUG does not exist, add it directly with the given CUG number as the document ID
-        await setDoc(doc(db, "cug", cugNo), {
-          cugNo: cugNo,
-          employeeNo: employeeNo,
-          employeeName: employeeName,
-          operator: status,
-          designation: designation,
-          division: division,
-          department: department,
-          status: s,
-          billUnit: billUnit,
-          allocation: allocation,
-          plan: plan,
-          createdAt: now,
-        });
-      }
+      const cugCollectionRef = collection(db, "cug");
+      await addDoc(cugCollectionRef, {
+        cugNo: cugNo,
+        employeeNo: employeeNo,
+        employeeName: employeeName,
+        operator: operator,
+        designation: designation,
+        division: division,
+        department: department,
+        status: status,
+        billUnit: billUnit,
+        allocation: allocation,
+        plan: plan,
+        createdAt: now,
+      });
 
       setSuccess("CUG added successfully!");
       setCugNo("");
@@ -107,7 +86,7 @@ const Addcug = () => {
       setDesignation("");
       setDivision("");
       setDepartment("");
-      setStatus("");
+      setOperator("");
       setBillUnit("");
       setAllocation("");
       setPlan("");
@@ -128,7 +107,6 @@ const Addcug = () => {
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
         <form className="row g-3" onSubmit={handleSubmit}>
-          {/* ----------CUG NO.------------------ */}
           <div className="col-md-4">
             <label htmlFor="inputCUGno" className="form-label">
               CUG No.
@@ -152,7 +130,6 @@ const Addcug = () => {
               )}
             </div>
           </div>
-          {/* ----------Employee No.--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputempNo" className="form-label">
               Employee No.
@@ -169,7 +146,6 @@ const Addcug = () => {
               required
             />
           </div>
-          {/* ----------Employee Name.--------------- */}
           <div className="col-12">
             <label htmlFor="inputName" className="form-label">
               Employee Name
@@ -184,7 +160,6 @@ const Addcug = () => {
               required
             />
           </div>
-          {/* ----------Employee Designation.--------------- */}
           <div className="col-4">
             <label htmlFor="inputDesignation" className="form-label">
               Designation
@@ -199,7 +174,6 @@ const Addcug = () => {
               required
             />
           </div>
-          {/* ----------Employee Division--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputDivision" className="form-label">
               Division
@@ -218,7 +192,6 @@ const Addcug = () => {
               <option value="East Coast">East Coast</option>
             </select>
           </div>
-          {/* ----------Employee Department--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputDepartment" className="form-label">
               Department
@@ -237,16 +210,15 @@ const Addcug = () => {
               <option value="ALP">ALP</option>
             </select>
           </div>
-          {/* ----------Operator--------------- */}
           <div className="col-md-4">
-            <label htmlFor="inputstatus" className="form-label">
+            <label htmlFor="inputOperator" className="form-label">
               Operator
             </label>
             <select
-              id="inputstatus"
+              id="inputOperator"
               className="form-select"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              value={operator}
+              onChange={(e) => setOperator(e.target.value)}
               required
             >
               <option value="" disabled>
@@ -258,7 +230,6 @@ const Addcug = () => {
               <option value="Jio">Jio</option>
             </select>
           </div>
-          {/* ----------Employee Bill Unit--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputbillUnit" className="form-label">
               Bill Unit
@@ -272,7 +243,6 @@ const Addcug = () => {
               required
             />
           </div>
-          {/* ----------Employee Allocation--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputAllocation" className="form-label">
               Allocation
@@ -291,7 +261,6 @@ const Addcug = () => {
               <option value="2345678">2345678</option>
             </select>
           </div>
-          {/* ----------Employee Plan--------------- */}
           <div className="col-md-4">
             <label htmlFor="inputPlan" className="form-label">
               Plan
