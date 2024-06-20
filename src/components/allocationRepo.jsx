@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../api/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
@@ -9,6 +9,8 @@ const AllocationReport = () => {
   const [allocationNo, setAllocationNo] = useState("");
   const [cugDetails, setCugDetails] = useState([]);
   const [error, setError] = useState("");
+  const [filterval, setfilterval] = useState("")
+  const [filteredcug, setfilteredcug] = useState([])
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -31,6 +33,18 @@ const AllocationReport = () => {
       setError("Error fetching CUG details. Please try again.");
     }
   };
+  useEffect(() => {
+    if (filterval) {
+      const results = cugDetails?.filter(
+        (item) =>
+          item?.department?.toLowerCase().includes(filterval?.toLowerCase()) ||
+          item?.operator?.toLowerCase().includes(filterval?.toLowerCase()) || item?.cugNo?.toLowerCase().includes(filterval?.toLowerCase()) ||item?.division?.toLowerCase().includes(filterval?.toLowerCase()) ||item?.status?.toLowerCase().includes(filterval?.toLowerCase()) 
+      );
+      setfilteredcug(results);
+    } else {
+      setfilteredcug(cugDetails);
+    }
+  }, [filterval, cugDetails]);
 
   const handleDownload = () => {
     const worksheet = XLSX.utils.json_to_sheet(cugDetails);
@@ -38,7 +52,7 @@ const AllocationReport = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "CUG Details");
     XLSX.writeFile(workbook, "Allocation-Wise Report.xlsx");
   };
-
+console.log(filteredcug);
   return (
     <>
       <main className="allotmentHistory">
@@ -63,9 +77,26 @@ const AllocationReport = () => {
           </button>
         </form>
         {error && <p className="error">{error}</p>}
-        {cugDetails.length > 0 && (
+        <form className="filterCUG" onSubmit={handleSearch}>
+          <div className="col-4 searchCont ">
+            <label htmlFor="searchAllocationNo" className="form-label">
+              Enter Value To Search
+            </label>
+            <input
+              type="search"
+              className="form-control"
+              name="searchAllocationNo"
+              id="searchAllocationNo"
+              value={filterval}
+              onChange={(e) => setfilterval(e.target.value)}
+              required
+            />
+          </div>
+
+        </form>
+        {filteredcug.length > 0 && (
           <div className="table-container">
-            <table className="table">
+            <table className="table special_scroll ">
               <thead>
                 <tr>
                   <th>CUG No.</th>
@@ -82,7 +113,7 @@ const AllocationReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {cugDetails.map((details, index) => (
+                {filteredcug.map((details, index) => (
                   <tr key={index} className={details.status === "Active" ? "active" : ""}>
                     <td>{details.cugNo}</td>
                     <td>{details.employeeNo}</td>
