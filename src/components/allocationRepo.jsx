@@ -38,7 +38,10 @@ const AllocationReport = () => {
       const results = cugDetails?.filter(
         (item) =>
           item?.department?.toLowerCase().includes(filterval?.toLowerCase()) ||
-          item?.operator?.toLowerCase().includes(filterval?.toLowerCase()) || item?.cugNo?.toLowerCase().includes(filterval?.toLowerCase()) ||item?.division?.toLowerCase().includes(filterval?.toLowerCase()) ||item?.status?.toLowerCase().includes(filterval?.toLowerCase()) 
+          item?.operator?.toLowerCase().includes(filterval?.toLowerCase()) || 
+          item?.cugNo?.toLowerCase().includes(filterval?.toLowerCase()) ||
+          item?.division?.toLowerCase().includes(filterval?.toLowerCase()) ||
+          item?.employeeNo?.toLowerCase().includes(filterval?.toLowerCase()) 
       );
       setfilteredcug(results);
     } else {
