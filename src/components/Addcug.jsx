@@ -47,6 +47,16 @@ const Addcug = () => {
     checkCugAvailability();
   }, [cugNo]);
 
+  const handleChangeCugNo = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, ''); // Allow only digits
+    setCugNo(value);
+  };
+
+  const handleChangeEmployeeNo = (e) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, ''); // Allow only alphanumeric characters
+    setEmployeeNo(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (cugNo.length !== 10 || employeeNo.length !== 11) {
@@ -118,7 +128,7 @@ const Addcug = () => {
                 id="inputCUGno"
                 placeholder="10 digit number"
                 value={cugNo}
-                onChange={(e) => setCugNo(e.target.value)}
+                onChange={handleChangeCugNo}
                 maxLength="10"
                 required
               />
@@ -140,7 +150,7 @@ const Addcug = () => {
               id="inputempNo"
               placeholder="11 alpha-numeric character"
               value={employeeNo}
-              onChange={(e) => setEmployeeNo(e.target.value)}
+              onChange={handleChangeEmployeeNo}
               maxLength="11"
               pattern="[a-zA-Z0-9]{11}"
               required
