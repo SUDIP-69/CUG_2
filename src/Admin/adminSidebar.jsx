@@ -35,6 +35,16 @@ const AdminSidebar = () => {
               Activate Deactivate Report
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/admin/CUGno">
+              Upload CUG No.
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/admin/CUGbill">
+              Upload CUG Bill
+            </NavLink>
+          </li>
         </ul>
         <div></div>
         <button className="logoutbtn" onClick={() => navigate("/login")}>

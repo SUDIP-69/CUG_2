@@ -9,6 +9,8 @@ import AcDeac from "./components/activate_deactivateCUG";
 import AllocationReport from "./components/allocationRepo";
 import PlanReport from "./components/planReport";
 import AdminSidebar from "./Admin/adminSidebar";
+import CUGbill from "./Admin/CUGbill"
+import CUGno from "./Admin/CUGno"
 import AllHis from "./Admin/allotmentHistory";
 import AcDeacReport from "./Admin/activate_deactivateReport";
 import CreateDealer from "./Admin/createDealer";
@@ -53,6 +55,8 @@ function App() {
             <Route path="allocationReport" element={<AllocationReport />} />
             <Route path="cugStatusReport" element={<CugStatusReport />} />
             <Route path="activate_Deactivate_report" element={<AcDeacReport />} />
+            <Route path="CUGbill" element={<CUGbill />} />
+            <Route path="CUGno" element={<CUGno />} />
           </Route>
         </Routes>
       </BrowserRouter>
