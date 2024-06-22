@@ -1,0 +1,44 @@
+.cugBillContainer {
+    padding: 20px;
+  }
+  
+  .cugBillContainer h1 {
+    margin-bottom: 20px;
+  }
+  
+  .cugBillError {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .cugBillButton {
+    margin-top: 20px;
+  }
+  
+  .cugBillTableContainer {
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto; /* Makes the table container scrollable */
+    margin-top: 20px; /* Adds space between the button and the table */
+  }
+  
+  .cugBillTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .cugBillTable th, .cugBillTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .cugBillTable th {
+    background-color: #f2f2f2;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+  }
+.abc
+{
+    margin-top: 30px;
+}  
