@@ -36,6 +36,7 @@ const Login = () => {
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
         login({ ...userData, role: userType });
+        localStorage.setItem("user",JSON.stringify(userData));
         if (userType === "Dealer") navigate("/dealer/addcug");
         else navigate("/admin/createDealer");
       } else {
