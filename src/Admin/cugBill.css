@@ -13,6 +13,20 @@
   
   .cugBillButton {
     margin-top: 20px;
+    padding: 10px;
+    border-radius: 7px;
+    background-color: #d03a49;
+    border-color: #d03a49;
+    color:#ddd;
+    font-size: 12px;
+  }
+  .cugBillButton:disabled{
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border-color: #fff;
+    background-color: #fff;    
+    font-size: 12px;
   }
   
   .cugBillTableContainer {
@@ -42,3 +56,51 @@
 {
     margin-top: 30px;
 }  
+
+
+.input-file-container {
+  position: relative;
+  width: 230px;
+} 
+.input-file-trigger {
+  border-radius: 8px;
+  display: block;
+  padding: 8px 35px;
+  background: #28a745;
+  color: #fff;
+  font-size: 1em;
+  transition: all .4s;
+  cursor: pointer;
+}
+.input-file {
+  position: absolute;
+  top: 0; left: 0;
+  width: 225px;
+  opacity: 0;
+  padding: 14px 0;
+  cursor: pointer;
+}
+.input-file:hover + .input-file-trigger,
+.input-file:focus + .input-file-trigger,
+.input-file-trigger:hover,
+.input-file-trigger:focus {
+  background: #047d20;
+  color:#ddd;
+}
+
+.file-return {
+  margin: 0;
+}
+.file-return:not(:empty) {
+  margin: 1em 0;
+}
+.file-return {
+  font-style: italic;
+  font-size: .9em;
+  font-weight: bold;
+}
+.file-return:not(:empty):before {
+  content: "Selected file: ";
+  font-style: normal;
+  font-weight: normal;
+}

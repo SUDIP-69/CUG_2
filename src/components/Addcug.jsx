@@ -14,6 +14,7 @@ const Addcug = () => {
   const [billUnit, setBillUnit] = useState("");
   const [allocation, setAllocation] = useState("");
   const [plan, setPlan] = useState("");
+  const [planDescription, setPlanDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [cugAvailable, setCugAvailable] = useState(null);
@@ -56,53 +57,30 @@ const Addcug = () => {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        // Fetch divisions
-        const divisionsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/division.json');
-        if (!divisionsResponse.ok) {
-          throw new Error('Failed to fetch divisions');
-        }
-        const divisionsData = await divisionsResponse.json();
-        setDivisionOptions(Object.keys(divisionsData).map(key => divisionsData[key]));
+        const fetchData = async (url) => {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data from ${url}`);
+          }
+          const data = await response.json();
+          return Object.keys(data).map(key => ({ key, value: data[key] })).filter(option => option.value !== "");
+        };
 
-        // Fetch departments
-        const departmentsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/department.json');
-        if (!departmentsResponse.ok) {
-          throw new Error('Failed to fetch departments');
-        }
-        const departmentsData = await departmentsResponse.json();
-        setDepartmentOptions(Object.keys(departmentsData).map(key => departmentsData[key]));
+        const [divisions, departments, operators, plans, designations, allocations] = await Promise.all([
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/division.json'),
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/department.json'),
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/operator.json'),
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/plan.json'),
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/designation.json'),
+          fetchData('https://cug-management-default-rtdb.firebaseio.com/allocation.json'),
+        ]);
 
-        // Fetch operators
-        const operatorsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/operator.json');
-        if (!operatorsResponse.ok) {
-          throw new Error('Failed to fetch operators');
-        }
-        const operatorsData = await operatorsResponse.json();
-        setOperatorOptions(Object.keys(operatorsData).map(key => operatorsData[key]));
-
-        // Fetch plans
-        const plansResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/plan.json');
-        if (!plansResponse.ok) {
-          throw new Error('Failed to fetch plans');
-        }
-        const plansData = await plansResponse.json();
-        setPlanOptions(Object.keys(plansData).map(key => plansData[key]));
-
-        // Fetch designations
-        const designationsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/designation.json');
-        if (!designationsResponse.ok) {
-          throw new Error('Failed to fetch designations');
-        }
-        const designationsData = await designationsResponse.json();
-        setDesignationOptions(Object.keys(designationsData).map(key => designationsData[key]));
-
-        // Fetch allocations
-        const allocationsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/allocation.json');
-        if (!allocationsResponse.ok) {
-          throw new Error('Failed to fetch allocations');
-        }
-        const allocationsData = await allocationsResponse.json();
-        setAllocationOptions(Object.keys(allocationsData).map(key => allocationsData[key]));
+        setDivisionOptions(divisions.map(div => div.value));
+        setDepartmentOptions(departments.map(dept => dept.value));
+        setOperatorOptions(operators.map(op => op.value));
+        setPlanOptions(plans);
+        setDesignationOptions(designations.map(desig => desig.value));
+        setAllocationOptions(allocations.map(alloc => alloc.value));
 
       } catch (error) {
         console.error('Error fetching options:', error);
@@ -120,6 +98,20 @@ const Addcug = () => {
   const handleChangeEmployeeNo = (e) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9]/g, ''); // Allow only alphanumeric characters
     setEmployeeNo(value);
+  };
+
+  const handleChangeBillUnit = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, ''); // Allow only digits
+    if (value.length <= 7) {
+      setBillUnit(value);
+    }
+  };
+
+  const handlePlanChange = (e) => {
+    const selectedKey = e.target.value;
+    const selectedPlan = planOptions.find(plan => plan.key === selectedKey);
+    setPlan(selectedKey);
+    setPlanDescription(selectedPlan ? selectedPlan.value : "");
   };
 
   const handleSubmit = async (e) => {
@@ -165,6 +157,7 @@ const Addcug = () => {
       setBillUnit("");
       setAllocation("");
       setPlan("");
+      setPlanDescription("");
       setError("");
       setCugAvailable(null);
     } catch (err) {
@@ -312,15 +305,18 @@ const Addcug = () => {
             </select>
           </div>
           <div className="col-md-4">
-            <label htmlFor="inputbillUnit" className="form-label">
+            <label htmlFor="inputBillUnit" className="form-label">
               Bill Unit
             </label>
             <input
-              type="number"
+              type="text"
               className="form-control"
-              id="inputbillUnit"
+              id="inputBillUnit"
+              placeholder="7 digit number"
               value={billUnit}
-              onChange={(e) => setBillUnit(e.target.value)}
+              onChange={handleChangeBillUnit}
+              maxLength="7"
+              pattern="[0-9]{7}"
               required
             />
           </div>
@@ -351,16 +347,22 @@ const Addcug = () => {
               id="inputPlan"
               className="form-select"
               value={plan}
-              onChange={(e) => setPlan(e.target.value)}
+              onChange={handlePlanChange}
               required
             >
               <option value="" disabled>
                 Choose...
               </option>
               {planOptions.map((pln, index) => (
-                <option key={index} value={pln}>{pln}</option>
+                <option key={index} value={pln.key}>Plan {pln.key}</option>
               ))}
             </select>
+            {plan && (
+              <div className="mt-2">
+                <strong>Price: </strong>
+                ₹ {planDescription}
+              </div>
+            )}
           </div>
           <div className="col-12">
             <button type="submit" className="btn btn-danger">

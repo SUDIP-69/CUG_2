@@ -7,3 +7,46 @@
 .addcug h1 {
   font-size: 3rem;
 }
+
+.addcug .form-select {
+  overflow-y:scroll;
+  max-height: 150px;
+}
+
+.input-group-text.text-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.input-group-text.text-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.error {
+  color: #d9534f;
+}
+
+.success {
+  color: #5cb85c;
+}
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #d13b4a;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

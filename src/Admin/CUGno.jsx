@@ -75,7 +75,17 @@ const CUGno = () => {
   return (
     <div className="cugBillContainer">
       <h1>Upload CUG Number</h1>
-      <input type="file" accept=".csv, .xlsx" onChange={handleFileUpload} />
+      {/* <input type="file" accept=".csv, .xlsx" onChange={handleFileUpload} /> */}
+
+      
+      <div class="input-file-container">
+        <input class="input-file" type="file" accept=".csv, .xlsx" onChange={handleFileUpload} />
+        <label tabindex="0" for="my-file" class="input-file-trigger" style={{fontSize:"15px"}}>
+          Click to upload file...
+        </label>
+      </div>
+      <p class="file-return"></p>
+      
       {error && <p className="cugBillError">{error}</p>}
       <button onClick={handleSaveToFirebase} disabled={uploading || data.length === 0} className="cugBillButton">
         {uploading ? 'Uploading...' : 'Save to Firebase'}

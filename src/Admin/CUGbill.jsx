@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
-import { db } from '../api/firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
-import './cugBill.css'; // Updated CSS file
+import React, { useState } from "react";
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
+import { db } from "../api/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import "./cugBill.css"; // Updated CSS file
 
 const CUGbill = () => {
   const [data, setData] = useState([]);
@@ -14,10 +14,10 @@ const CUGbill = () => {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    const fileType = file.name.split('.').pop().toLowerCase();
+    const fileType = file.name.split(".").pop().toLowerCase();
     setError("");
 
-    if (fileType === 'csv') {
+    if (fileType === "csv") {
       Papa.parse(file, {
         header: true,
         complete: (results) => {
@@ -27,14 +27,14 @@ const CUGbill = () => {
         error: (error) => {
           setError("Error parsing CSV file.");
           console.error("Error parsing CSV file: ", error);
-        }
+        },
       });
-    } else if (fileType === 'xlsx') {
+    } else if (fileType === "xlsx") {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
@@ -60,10 +60,10 @@ const CUGbill = () => {
     try {
       const batchSize = data.length;
       for (let i = 0; i < batchSize; i++) {
-        await addDoc(collection(db, 'csvdata'), data[i]);
+        await addDoc(collection(db, "csvdata"), data[i]);
         setProgress(((i + 1) / batchSize) * 100);
       }
-      alert('Data successfully saved to Firebase!');
+      alert("Data successfully saved to Firebase!");
     } catch (error) {
       console.error("Error adding document: ", error);
       setError("Error uploading data to Firebase.");
@@ -75,11 +75,24 @@ const CUGbill = () => {
   return (
     <div className="cugBillContainer">
       <h1>Upload CUG Bill Data</h1>
-      <input type="file" accept=".csv, .xlsx" onChange={handleFileUpload} />
+      {/* <input type="file" accept=".csv, .xlsx" onChange={handleFileUpload} /> */}
+
+      <div class="input-file-container">
+        <input class="input-file" type="file" accept=".csv, .xlsx" onChange={handleFileUpload} />
+        <label tabindex="0" for="my-file" class="input-file-trigger" style={{fontSize:"15px"}}>
+          Click to upload file...
+        </label>
+      </div>
+      <p class="file-return"></p>
+
       {error && <p className="cugBillError">{error}</p>}
-      <button onClick={handleSaveToFirebase} disabled={uploading || data.length === 0} className="cugBillButton">
-        {uploading ? 'Uploading...' : 'Save to Firebase'}
-      </button>      
+      <button
+        onClick={handleSaveToFirebase}
+        disabled={uploading || data.length === 0}
+        className="cugBillButton"
+      >
+        {uploading ? "Uploading..." : "Save to Firebase"}
+      </button>
       {rowCount > 0 && <p>{rowCount} rows ready for upload.</p>}
 
       {uploading && (
