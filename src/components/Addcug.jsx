@@ -18,6 +18,13 @@ const Addcug = () => {
   const [success, setSuccess] = useState("");
   const [cugAvailable, setCugAvailable] = useState(null);
 
+  const [divisionOptions, setDivisionOptions] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [operatorOptions, setOperatorOptions] = useState([]);
+  const [planOptions, setPlanOptions] = useState([]);
+  const [designationOptions, setDesignationOptions] = useState([]);
+  const [allocationOptions, setAllocationOptions] = useState([]);
+
   useEffect(() => {
     const checkCugAvailability = async () => {
       if (cugNo.length === 10) {
@@ -27,7 +34,6 @@ const Addcug = () => {
 
           if (!querySnapshot.empty) {
             const existingCug = querySnapshot.docs[0].data();
-            // console.log(existingCug);
             if (existingCug.status === "Active") {
               setCugAvailable(false);
             } else {
@@ -46,6 +52,65 @@ const Addcug = () => {
 
     checkCugAvailability();
   }, [cugNo]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        // Fetch divisions
+        const divisionsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/division.json');
+        if (!divisionsResponse.ok) {
+          throw new Error('Failed to fetch divisions');
+        }
+        const divisionsData = await divisionsResponse.json();
+        setDivisionOptions(Object.keys(divisionsData).map(key => divisionsData[key]));
+
+        // Fetch departments
+        const departmentsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/department.json');
+        if (!departmentsResponse.ok) {
+          throw new Error('Failed to fetch departments');
+        }
+        const departmentsData = await departmentsResponse.json();
+        setDepartmentOptions(Object.keys(departmentsData).map(key => departmentsData[key]));
+
+        // Fetch operators
+        const operatorsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/operator.json');
+        if (!operatorsResponse.ok) {
+          throw new Error('Failed to fetch operators');
+        }
+        const operatorsData = await operatorsResponse.json();
+        setOperatorOptions(Object.keys(operatorsData).map(key => operatorsData[key]));
+
+        // Fetch plans
+        const plansResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/plan.json');
+        if (!plansResponse.ok) {
+          throw new Error('Failed to fetch plans');
+        }
+        const plansData = await plansResponse.json();
+        setPlanOptions(Object.keys(plansData).map(key => plansData[key]));
+
+        // Fetch designations
+        const designationsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/designation.json');
+        if (!designationsResponse.ok) {
+          throw new Error('Failed to fetch designations');
+        }
+        const designationsData = await designationsResponse.json();
+        setDesignationOptions(Object.keys(designationsData).map(key => designationsData[key]));
+
+        // Fetch allocations
+        const allocationsResponse = await fetch('https://cug-management-default-rtdb.firebaseio.com/allocation.json');
+        if (!allocationsResponse.ok) {
+          throw new Error('Failed to fetch allocations');
+        }
+        const allocationsData = await allocationsResponse.json();
+        setAllocationOptions(Object.keys(allocationsData).map(key => allocationsData[key]));
+
+      } catch (error) {
+        console.error('Error fetching options:', error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
 
   const handleChangeCugNo = (e) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Allow only digits
@@ -174,15 +239,20 @@ const Addcug = () => {
             <label htmlFor="inputDesignation" className="form-label">
               Designation
             </label>
-            <input
-              type="text"
-              className="form-control"
+            <select
               id="inputDesignation"
-              placeholder="Dr./Mr./Mrs."
+              className="form-select"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
               required
-            />
+            >
+              <option value="" disabled>
+                Choose...
+              </option>
+              {designationOptions.map((desig, index) => (
+                <option key={index} value={desig}>{desig}</option>
+              ))}
+            </select>
           </div>
           <div className="col-md-4">
             <label htmlFor="inputDivision" className="form-label">
@@ -198,8 +268,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="South-East">South-East</option>
-              <option value="East Coast">East Coast</option>
+              {divisionOptions.map((div, index) => (
+                <option key={index} value={div}>{div}</option>
+              ))}
             </select>
           </div>
           <div className="col-md-4">
@@ -216,8 +287,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Signaling">Signaling</option>
-              <option value="ALP">ALP</option>
+              {departmentOptions.map((dept, index) => (
+                <option key={index} value={dept}>{dept}</option>
+              ))}
             </select>
           </div>
           <div className="col-md-4">
@@ -234,10 +306,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Airtel">Airtel</option>
-              <option value="Vi">Vi</option>
-              <option value="BSNL">BSNL</option>
-              <option value="Jio">Jio</option>
+              {operatorOptions.map((op, index) => (
+                <option key={index} value={op}>{op}</option>
+              ))}
             </select>
           </div>
           <div className="col-md-4">
@@ -267,8 +338,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="1234567">1234567</option>
-              <option value="2345678">2345678</option>
+              {allocationOptions.map((alloc, index) => (
+                <option key={index} value={alloc}>{alloc}</option>
+              ))}
             </select>
           </div>
           <div className="col-md-4">
@@ -285,9 +357,9 @@ const Addcug = () => {
               <option value="" disabled>
                 Choose...
               </option>
-              <option value="Plan A">Plan A</option>
-              <option value="Plan B">Plan B</option>
-              <option value="Plan C">Plan C</option>
+              {planOptions.map((pln, index) => (
+                <option key={index} value={pln}>{pln}</option>
+              ))}
             </select>
           </div>
           <div className="col-12">
