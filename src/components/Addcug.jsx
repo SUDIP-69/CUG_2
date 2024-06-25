@@ -18,6 +18,7 @@ const Addcug = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [cugAvailable, setCugAvailable] = useState(null);
+  const [employeeNoAvailable, setEmployeeNoAvailable] = useState(null);
 
   const [divisionOptions, setDivisionOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
@@ -53,6 +54,29 @@ const Addcug = () => {
 
     checkCugAvailability();
   }, [cugNo]);
+
+  useEffect(() => {
+    const checkEmployeeNoAvailability = async () => {
+      if (employeeNo.length === 11) {
+        try {
+          const q = query(collection(db, "cug"), where("employeeNo", "==", employeeNo));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            setEmployeeNoAvailable(false);
+          } else {
+            setEmployeeNoAvailable(true);
+          }
+        } catch (err) {
+          console.error("Error checking Employee No. availability: ", err);
+        }
+      } else {
+        setEmployeeNoAvailable(null);
+      }
+    };
+
+    checkEmployeeNoAvailability();
+  }, [employeeNo]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -126,6 +150,11 @@ const Addcug = () => {
       return;
     }
 
+    if (employeeNoAvailable === false) {
+      setError("This Employee No. is already in use.");
+      return;
+    }
+
     try {
       const now = new Date().toLocaleString();
       const status = "Active";
@@ -160,6 +189,7 @@ const Addcug = () => {
       setPlanDescription("");
       setError("");
       setCugAvailable(null);
+      setEmployeeNoAvailable(null);
     } catch (err) {
       console.error("Error adding document: ", err);
       setError("Error adding CUG. Please try again.");
@@ -202,17 +232,25 @@ const Addcug = () => {
             <label htmlFor="inputempNo" className="form-label">
               Employee No.
             </label>
-            <input
-              type="text"
-              className="form-control"
-              id="inputempNo"
-              placeholder="11 alpha-numeric character"
-              value={employeeNo}
-              onChange={handleChangeEmployeeNo}
-              maxLength="11"
-              pattern="[a-zA-Z0-9]{11}"
-              required
-            />
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                id="inputempNo"
+                placeholder="11 alpha-numeric character"
+                value={employeeNo}
+                onChange={handleChangeEmployeeNo}
+                maxLength="11"
+                pattern="[a-zA-Z0-9]{11}"
+                required
+              />
+              {employeeNoAvailable === true && (
+                <span className="input-group-text text-success">✔</span>
+              )}
+              {employeeNoAvailable === false && (
+                <span className="input-group-text text-danger">✖</span>
+              )}
+            </div>
           </div>
           <div className="col-12">
             <label htmlFor="inputName" className="form-label">

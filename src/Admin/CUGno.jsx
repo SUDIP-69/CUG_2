@@ -60,7 +60,7 @@ const CUGno = () => {
     try {
       const batchSize = data.length;
       for (let i = 0; i < batchSize; i++) {
-        await addDoc(collection(db, 'csvdata'), data[i]);
+        await addDoc(collection(db, 'cug'), data[i]);
         setProgress(((i + 1) / batchSize) * 100);
       }
       alert('Data successfully saved to Firebase!');
